@@ -1,0 +1,23 @@
+name: Daily Deploy
+
+on:
+  schedule:
+    # 6 AM Pacific = 14:00 UTC (or 13:00 during daylight saving)
+    - cron: '0 14 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # - name: Checkout repository
+      #   uses: actions/checkout@v4
+      #   with:
+      #     submodules: recursive
+      #     ssh-key: ${{ secrets.SUBMODULE_SSH_KEY }}
+
+      - name: Trigger Cloudflare Pages deployment
+        run: |
+          curl -X POST ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }} \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}"
